@@ -80,7 +80,7 @@ public class HomeFrame extends javax.swing.JFrame {
     }
 
     HomeFrame() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void updatePoints(int newPoints) {
@@ -570,7 +570,6 @@ public class HomeFrame extends javax.swing.JFrame {
             pst.executeUpdate();
             HashSet<String> completedTasks = getCompletedTasksForToday();
             boolean taskAlreadyDone = completedTasks.contains("logMood");
-
             if (taskAlreadyDone) {
                 JOptionPane.showMessageDialog(this, "Mood logged successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
@@ -598,53 +597,40 @@ public class HomeFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_MeditateActionPerformed
 
     private void readBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readBookActionPerformed
-        // 1. Get book suggestion based on the currently logged emotion
         String suggestion = getBookSuggestion(this.selectedEmotion);
-
-        // 2. Combine the suggestion with the timer confirmation
         String message = suggestion + "\n\nThis task has a 15-minute timer."
                 + "\nClick 'Yes' to start the timer and read your book.";
-
         int response = JOptionPane.showConfirmDialog(this,
                 message,
                 "Book Suggestion & Task Timer",
                 JOptionPane.YES_NO_OPTION,
-                JOptionPane.INFORMATION_MESSAGE); // Use INFORMATION_MESSAGE to show a nice icon
-
-        // 3. Handle the response
+                JOptionPane.INFORMATION_MESSAGE);
         if (response != JOptionPane.YES_OPTION) {
-            readBook.setSelected(false); // Uncheck the box if they click "No"
+            readBook.setSelected(false);
             return;
         }
-
-        // 4. --- Timer Logic (copied and adapted from startTaskTimer) ---
-        // We do this here instead of calling startTaskTimer so we can show the custom dialog first.
         final int points = 15;
         final String taskName = "ReadBook";
         final String friendlyTaskName = "Read a book for 15 minutes";
-        final int durationInSeconds = 900; // 15 minutes
-
+        final int durationInSeconds = 900;
         timeRemaining = durationInSeconds;
         JDialog timerDialog = new JDialog(this, "Task in Progress", true);
-        timerDialog.setSize(350, 120); // Slightly wider/taller for the text
+        timerDialog.setSize(350, 120);
         timerDialog.setLocationRelativeTo(this);
         timerDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
         timerDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 if (countdownTimer != null) {
                     countdownTimer.stop();
                 }
-                readBook.setSelected(false); // Uncheck the box if timer is cancelled
+                readBook.setSelected(false);
                 JOptionPane.showMessageDialog(HomeFrame.this, "Task cancelled.", "Timer Stopped", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-
         JLabel timerLabel = new JLabel("Time remaining: 15:00", JLabel.CENTER);
         timerLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 18));
         timerDialog.getContentPane().add(timerLabel, BorderLayout.CENTER);
-
         countdownTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -652,7 +638,6 @@ public class HomeFrame extends javax.swing.JFrame {
                 int minutes = timeRemaining / 60;
                 int seconds = timeRemaining % 60;
                 timerLabel.setText(String.format("Time remaining: %02d:%02d", minutes, seconds));
-
                 if (timeRemaining <= 0) {
                     countdownTimer.stop();
                     timerDialog.dispose();
@@ -664,7 +649,7 @@ public class HomeFrame extends javax.swing.JFrame {
                     boolean success = awardPoints(points, taskName);
                     if (success) {
                         JOptionPane.showMessageDialog(HomeFrame.this, "Great job! " + points + " points added.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        loadTaskStatus(); // This will re-run and set the checkbox to enabled=false
+                        loadTaskStatus();
                         loadUserData();
                     } else {
                         JOptionPane.showMessageDialog(HomeFrame.this, "Could not add points. You may have already completed this task today.", "Task Not Logged", JOptionPane.WARNING_MESSAGE);
@@ -676,7 +661,7 @@ public class HomeFrame extends javax.swing.JFrame {
 
         countdownTimer.start();
         timerDialog.setVisible(true);
-    }//GEN-LAST:event_readBookActionPerformed
+    }
 
     private void stretchingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stretchingActionPerformed
         startTaskTimer(stretching, 10, "Stretching", "Do 10 minutes of stretching", 600);
@@ -718,8 +703,8 @@ public class HomeFrame extends javax.swing.JFrame {
     private void journalBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_journalBtnActionPerformed
         JournalFrame journal = new JournalFrame(this);
         journal.setVisible(true);
-        journal.setLocationRelativeTo(this); // Optional: Centers the new frame
-        this.setVisible(false); // Hide the HomeFrame
+        journal.setLocationRelativeTo(this);
+        this.setVisible(false);
     }//GEN-LAST:event_journalBtnActionPerformed
 
     private void convertpointsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertpointsBtnActionPerformed
@@ -807,11 +792,10 @@ public class HomeFrame extends javax.swing.JFrame {
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     String fullName = rs.getString("full_name");
-                    int points = rs.getInt("points"); // This is a LOCAL variable
+                    int points = rs.getInt("points");
                     this.userPoints = points;
                     welcomeLabel.setText("Welcome, " + fullName + "!");
                     pointsLabel.setText("Total Points: " + points);
-                    // PROBLEM: You never set this.userPoints
                 }
             }
         } catch (Exception ex) {
@@ -1024,9 +1008,7 @@ public class HomeFrame extends javax.swing.JFrame {
 
     private String getBookSuggestion(String emotion) {
         String suggestion = "";
-        // Use the emotion string, defaulting to "happy" if it's null
-        String emotionCase = (emotion == null) ? "" : emotion.toLowerCase();
-        
+        String emotionCase = (emotion == null) ? "" : emotion.toLowerCase();    
         switch (emotionCase) {
             case "happy":
                 suggestion = "To ride that wave of positivity, maybe try an uplifting story!\n"
@@ -1044,7 +1026,6 @@ public class HomeFrame extends javax.swing.JFrame {
                         + "(Note: You can read any book you like!)";
                 break;
             default:
-                // This will be triggered if selectedEmotion is ""
                 suggestion = "You haven't logged a specific mood yet, so how about a book on self-improvement?\n"
                         + "Suggestion: 'Atomic Habits' by James Clear.\n"
                         + "(Note: You can read any book you like!)";
